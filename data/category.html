@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categories - PhoneHub</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">PhoneHub</div>
+</header>
+
+<section class="category-list">
+    <h2>Phones in this Category</h2>
+    <div class="phone-grid" id="phoneGrid"></div>
+</section>
+
+<script>
+// Load products from JSON
+fetch('../data/products.json')
+  .then(response => response.json())
+  .then(data => {
+    const grid = document.getElementById('phoneGrid');
+    data.forEach(product => {
+      const card = document.createElement('div');
+      card.classList.add('phone-card');
+      card.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>${product.price}</p>
+        <a href="${product.link}" class="btn" target="_blank">Buy Now</a>
+      `;
+      grid.appendChild(card);
+    });
+  })
+  .catch(err => console.error('Failed to load products:', err));
+</script>
+
+</body>
+</html>

@@ -6,3 +6,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
         document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior:'smooth'});
     });
 });
+// Mobile menu toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const nav = document.querySelector('nav ul');
+
+menuToggle?.addEventListener('click', () => {
+    nav.classList.toggle('active');
+});

@@ -13,28 +13,19 @@
 <form id="addProductForm">
   <input type="text" id="name" placeholder="Phone Name" required><br><br>
   <input type="text" id="price" placeholder="Price" required><br><br>
-  <input type="text" id="image" placeholder="Image URL" required><br><br>
+  <input type="text" id="image" placeholder="Image URL (or hosted link)" required><br><br>
   <input type="text" id="link" placeholder="Affiliate Link" required><br><br>
   <input type="checkbox" id="deal"> Highlight as Deal<br><br>
   <button type="submit">Add Product</button>
 </form>
 
-<h2>Add Blog Post</h2>
-<form id="addBlogForm">
-  <input type="text" id="title" placeholder="Title" required><br><br>
-  <textarea id="content" placeholder="Content" required></textarea><br><br>
-  <button type="submit">Add Blog Post</button>
-</form>
-
 <h2>Existing Products</h2>
 <div id="productList"></div>
-
-<h2>Existing Blog Posts</h2>
-<div id="blogList"></div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
 
 <script>
 // Initialize Firebase
@@ -42,41 +33,39 @@ const firebaseConfig = {
   apiKey: "AIzaSyASCkiW0xaR2MHudwRxZI5Ab6tpuHZIPhw",
   authDomain: "cellphonecentral-a94a5.firebaseapp.com",
   projectId: "cellphonecentral-a94a5",
-  storageBucket: "cellphonecentral-a94a5.firebasestorage.app",
+  storageBucket: "cellphonecentral-a94a5.appspot.com",
   messagingSenderId: "6131202538",
   appId: "1:6131202538:web:5428a6f55b1c2fb01c9a93"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 // Add Product
 document.getElementById('addProductForm').addEventListener('submit', async e => {
   e.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const price = document.getElementById('price').value;
+  const image = document.getElementById('image').value;
+  const link = document.getElementById('link').value;
+  const deal = document.getElementById('deal').checked;
+
   await db.collection("products").add({
-    name: document.getElementById('name').value,
-    price: document.getElementById('price').value,
-    image: document.getElementById('image').value,
-    link: document.getElementById('link').value,
-    deal: document.getElementById('deal').checked,
+    name,
+    price,
+    image, // URL of hosted image
+    link,
+    deal,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
+
   e.target.reset();
   loadProducts();
 });
 
-// Add Blog Post
-document.getElementById('addBlogForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  await db.collection("blog").add({
-    title: document.getElementById('title').value,
-    content: document.getElementById('content').value,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  e.target.reset();
-  loadBlogs();
-});
-
-// Load Products
+// Load existing products
 async function loadProducts() {
   const list = document.getElementById('productList');
   list.innerHTML = "";
@@ -84,27 +73,15 @@ async function loadProducts() {
   snapshot.forEach(doc => {
     const p = doc.data();
     const div = document.createElement('div');
-    div.innerHTML = `<strong>${p.name}</strong> - ${p.price} ${p.deal ? "(Deal!)" : ""} <a href="${p.link}" target="_blank">Buy Link</a>`;
+    div.innerHTML = `
+      <strong>${p.name}</strong> - ${p.price} ${p.deal ? "(Deal!)" : ""}
+      <a href="${p.link}" target="_blank">Buy Link</a>`;
     list.appendChild(div);
   });
 }
 
-// Load Blogs
-async function loadBlogs() {
-  const list = document.getElementById('blogList');
-  list.innerHTML = "";
-  const snapshot = await db.collection("blog").orderBy("timestamp", "desc").get();
-  snapshot.forEach(doc => {
-    const b = doc.data();
-    const div = document.createElement('div');
-    div.innerHTML = `<strong>${b.title}</strong><p>${b.content}</p>`;
-    list.appendChild(div);
-  });
-}
-
-// Initial Load
+// Initial load
 loadProducts();
-loadBlogs();
 </script>
 </body>
 </html>

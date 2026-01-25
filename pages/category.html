@@ -3,53 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Categories - PhoneHub</title>
+<title>Categories - Cellphone Central</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header>
-    <div class="logo">PhoneHub</div>
-    <nav>
-        <ul>
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="category.html">Categories</a></li>
-            <li><a href="deals.html">Deals</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
+  <div class="logo">Cellphone Central</div>
 </header>
 
 <section class="category-list">
-    <h2>Phones in this Category</h2>
-    <div class="phone-grid">
-        <div class="phone-card">
-            <img src="../images/phone1.jpg" alt="Phone 1">
-            <h3>Samsung Galaxy S23</h3>
-            <p>₱45,000</p>
-            <a href="product.html" class="btn">View Product</a>
-        </div>
-        <div class="phone-card">
-            <img src="../images/phone2.jpg" alt="Phone 2">
-            <h3>iPhone 15</h3>
-            <p>₱60,000</p>
-            <a href="product.html" class="btn">View Product</a>
-        </div>
-        <div class="phone-card">
-            <img src="../images/phone3.jpg" alt="Phone 3">
-            <h3>Realme GT Neo</h3>
-            <p>₱18,000</p>
-            <a href="product.html" class="btn">View Product</a>
-        </div>
-    </div>
+  <h2>Phones in this Category</h2>
+  <div class="phone-grid" id="phoneGrid"></div>
 </section>
 
-<footer>
-    <p>&copy; 2026 PhoneHub | Affiliate Disclosure: We earn from purchases made via our links.</p>
-</footer>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
-<script src="../js/script.js"></script>
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyASCkiW0xaR2MHudwRxZI5Ab6tpuHZIPhw",
+  authDomain: "cellphonecentral-a94a5.firebaseapp.com",
+  projectId: "cellphonecentral-a94a5",
+  storageBucket: "cellphonecentral-a94a5.firebasestorage.app",
+  messagingSenderId: "6131202538",
+  appId: "1:6131202538:web:5428a6f55b1c2fb01c9a93"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const grid = document.getElementById('phoneGrid');
+db.collection("products").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+  grid.innerHTML = "";
+  snapshot.forEach(doc => {
+    const product = doc.data();
+    const card = document.createElement('div');
+    card.classList.add('phone-card');
+    card.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <h3>${product.name}</h3>
+      <p>${product.price}</p>
+      <a href="${product.link}" class="btn" target="_blank">Buy Now</a>
+    `;
+    grid.appendChild(card);
+  });
+});
+</script>
+
 </body>
 </html>

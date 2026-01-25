@@ -1,42 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Categories - PhoneHub</title>
-<link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
+<div class="phone-grid" id="phoneGrid"></div>
 
-<header>
-    <div class="logo">PhoneHub</div>
-</header>
-
-<section class="category-list">
-    <h2>Phones in this Category</h2>
-    <div class="phone-grid" id="phoneGrid"></div>
-</section>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
 <script>
-// Load products from JSON
-fetch('../data/products.json')
-  .then(response => response.json())
-  .then(data => {
-    const grid = document.getElementById('phoneGrid');
-    data.forEach(product => {
-      const card = document.createElement('div');
-      card.classList.add('phone-card');
-      card.innerHTML = `
-        <img src="${product.image}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <p>${product.price}</p>
-        <a href="${product.link}" class="btn" target="_blank">Buy Now</a>
-      `;
-      grid.appendChild(card);
-    });
-  })
-  .catch(err => console.error('Failed to load products:', err));
-</script>
+firebase.initializeApp({
+  apiKey: "AIzaSyASCkiW0xaR2MHudwRxZI5Ab6tpuHZIPhw",
+  authDomain: "cellphonecentral-a94a5.firebaseapp.com",
+  projectId: "cellphonecentral-a94a5",
+  storageBucket: "cellphonecentral-a94a5.firebasestorage.app",
+  messagingSenderId: "6131202538",
+  appId: "1:6131202538:web:5428a6f55b1c2fb01c9a93"
+});
+const db = firebase.firestore();
 
-</body>
-</html>
+const grid = document.getElementById('phoneGrid');
+db.collection("products").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+  grid.innerHTML = "";
+  snapshot.forEach(doc => {
+    const p = doc.data();
+    const card = document.createElement('div');
+    card.classList.add('phone-card');
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>${p.price}</p>
+      <a href="${p.link}" class="btn" target="_blank">Buy Now</a>
+    `;
+    grid.appendChild(card);
+  });
+});
+</script>

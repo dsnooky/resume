@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - PhoneHub</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<h1>Admin Panel - Add New Product</h1>
+
+<form id="addProductForm">
+  <input type="text" id="name" placeholder="Phone Name" required><br><br>
+  <input type="text" id="price" placeholder="Price" required><br><br>
+  <input type="text" id="image" placeholder="Image URL" required><br><br>
+  <input type="text" id="link" placeholder="Affiliate Link" required><br><br>
+  <button type="submit">Add Product</button>
+</form>
+
+<script>
+const form = document.getElementById('addProductForm');
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  // Collect form data
+  const product = {
+    name: document.getElementById('name').value,
+    price: document.getElementById('price').value,
+    image: document.getElementById('image').value,
+    link: document.getElementById('link').value
+  };
+
+  // Show product in console (placeholder for saving to JSON)
+  console.log("New product:", product);
+  alert("Product ready to add! Save this in products.json or use backend to automate.");
+  
+  // Clear form
+  form.reset();
+});
+</script>
+
+</body>
+</html>
